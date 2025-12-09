@@ -30,8 +30,8 @@ module Game
       return unless session.panic? && session.panic_expired?
 
       session.lose!(
-        ending: 'panic_timeout',
-        message: 'El techo colapsa sobre ti. La Mansión Velasco se ha cobrado otra víctima.'
+        ending: GameConstants::Endings::PANIC_TIMEOUT,
+        message: I18n.t('game.endings.panic_timeout', default: 'El techo colapsa sobre ti. La Mansión Velasco se ha cobrado otra víctima.')
       )
       error(session.ending_message)
     end

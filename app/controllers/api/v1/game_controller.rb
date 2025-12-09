@@ -7,79 +7,62 @@ module Api
       before_action :require_session!, except: [:start]
 
       def start
-        result = Game::StartService.new.call
-        render json: result, status: :created
+        session = GameSession.create!
+        room = session.current_room
+
+        render json: {
+          game_id: session.id.to_s,
+          player: { lives: session.lives, inventory: [] },
+          current_room: RoomSerializer.render_as_hash(room, session: session),
+          message: 'Bienvenido. Encuentra la salida antes de que sea tarde.'
+        }, status: :created
       end
 
       def look
-        result = Game::LookService.new(@session).call
-        render json: result
+        execute_command(:look)
       end
 
       def inventory
-        result = Game::InventoryService.new(@session).call
-        render json: result
+        execute_command(:inventory)
       end
 
       def clues
-        clues = @session.collected_clues.map do |slug|
+        clues = @session.collected_clues.filter_map do |slug|
           clue = Clue.find_by_slug(slug)
           next unless clue
 
-          { id: clue.slug, text: dynamic_clue_text(clue), source: clue.source }
-        end.compact
+          { id: clue.slug, text: DynamicContent.clue_text(clue, @session), source: clue.source }
+        end
 
         render json: { clues: clues }
       end
 
       def status
-        result = Game::StatusService.new(@session).call
-        render json: result
+        execute_command(:status)
       end
 
       def examine
-        result = Game::ExamineService.new(@session, target: params.require(:target)).call
-        render json: result
+        execute_command(:examine, target: params.require(:target))
       end
 
       def use
-        result = Game::UseService.new(
-          @session,
-          item: params.require(:item),
-          target: params.require(:target)
-        ).call
-        render json: result
+        execute_command(:use, item: params.require(:item), target: params.require(:target))
       end
 
       def use_on_door
-        result = Game::UseOnDoorService.new(
-          @session,
-          item: params.require(:item),
-          direction: params.require(:direction)
-        ).call
-        render json: result
+        execute_command(:use_on_door, item: params.require(:item), direction: params.require(:direction))
       end
 
       def move
-        result = Game::MoveService.new(@session, direction: params.require(:direction)).call
-        render json: result
+        execute_command(:move, direction: params.require(:direction))
       end
 
       private
 
-      def dynamic_clue_text(clue)
-        case clue.slug
-        when 'clue_year'
-          "El año #{@session.photo_year} parece importante. María Velasco tenía #{@session.age_in_photo} años en la foto."
-        when 'clue_birth'
-          "Si María tenía #{@session.age_in_photo} años en #{@session.photo_year}... nació en #{@session.birth_year}."
-        when 'clue_collar'
-          "El collar de María tiene grabado: #{@session.birth_year}"
-        when 'clue_birthday'
-          "María cumplió #{@session.age_in_photo} en #{@session.photo_year}. Confirmado: nació en #{@session.birth_year}."
-        else
-          clue.text
-        end
+      def execute_command(action, params = {})
+        command = Commands::CommandFactory.create(action, @session, params)
+        result = command.execute
+        render json: result
       end
     end
   end

@@ -1,18 +1,14 @@
 # frozen_string_literal: true
 
-module Game
-  class TerminalAuthService < BaseService
-    attr_reader :password
+module Commands
+  class TerminalAuthCommand < BaseCommand
+    MAX_ATTEMPTS = 3
 
-    def initialize(session, password:)
-      super(session)
-      @password = password
-    end
+    private
 
-    def call
-      return { error: errors.first, game_over: true } if check_game_over
-      return { error: 'No hay terminal en esta habitación.' } unless in_terminal_room?
-      return { error: 'Ya te has autenticado.' } if session.has_vault_token
+    def perform
+      return error_result('No hay terminal en esta habitación.') unless in_terminal_room?
+      return error_result('Ya te has autenticado.') if session.has_vault_token
 
       if correct_password?
         process_success
@@ -21,14 +17,12 @@ module Game
       end
     end
 
-    private
-
     def in_terminal_room?
-      session.current_room_slug == GameConstants::Rooms::ESTUDIO
+      session.current_room_slug == 'estudio'
     end
 
     def correct_password?
-      password == session.password
+      params[:password] == session.password
     end
 
     def process_success
@@ -37,16 +31,10 @@ module Game
       session.update!(has_vault_token: true, vault_token: token)
       session.activate_panic!
 
-      {
+      success_result(
         success: true,
         message: 'ACCESO CONCEDIDO. Bienvenido, Dr. Velasco.',
-        terminal_output: [
-          'Sistema Velasco v2.1',
-          'Último acceso: 15/10/1987',
-          'Generando tarjeta de acceso...',
-          '⚠️ ALERTA: Protocolo de seguridad activado',
-          '⚠️ AUTODESTRUCCIÓN EN 30 SEGUNDOS'
-        ],
+        terminal_output: terminal_messages,
         panic_mode: {
           activated: true,
           time_remaining: session.panic_time_remaining,
@@ -58,37 +46,46 @@ module Game
           name: 'Tarjeta de Acceso Nivel 1',
           description: 'Tarjeta magnética. ¡DATE PRISA!'
         }
-      }
+      )
     end
 
     def process_failure
       session.inc(terminal_attempts: 1)
-      attempts_remaining = Settings.game.max_terminal_attempts - session.terminal_attempts
+      attempts_remaining = MAX_ATTEMPTS - session.terminal_attempts
 
       if attempts_remaining <= 0
         session.lose!(
-          ending: GameConstants::Endings::TERMINAL_BLOCKED,
-          message: I18n.t('game.endings.terminal_blocked', default: 'El sistema se ha bloqueado. Escuchas pasos acercándose. No hay escape.')
+          ending: 'terminal_blocked',
+          message: 'El sistema se ha bloqueado. Escuchas pasos acercándose. No hay escape.'
         )
 
-        return {
-          success: false,
-          message: 'SISTEMA BLOQUEADO',
+        return error_result(
+          'SISTEMA BLOQUEADO',
           game_over: true,
           ending: {
             type: 'bad_ending',
             title: 'Bloqueado',
             description: session.ending_message
           }
-        }
+        )
       end
 
-      {
+      success_result(
         success: false,
         message: 'ACCESO DENEGADO',
         attempts_remaining: attempts_remaining,
         warning: "Advertencia: #{attempts_remaining} intentos restantes antes del bloqueo."
-      }
+      )
+    end
+
+    def terminal_messages
+      [
+        'Sistema Velasco v2.1',
+        'Último acceso: 15/10/1987',
+        'Generando tarjeta de acceso...',
+        '⚠️ ALERTA: Protocolo de seguridad activado',
+        '⚠️ AUTODESTRUCCIÓN EN 30 SEGUNDOS'
+      ]
     end
   end
 end

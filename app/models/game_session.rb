@@ -1,34 +1,45 @@
 # frozen_string_literal: true
 
+# GameSession: Modelo principal del juego
+# SRP: Las responsabilidades están delegadas a concerns específicos
 class GameSession
   include Mongoid::Document
   include Mongoid::Timestamps
   include AASM
 
-  field :current_room_slug, type: String, default: 'cellar'
+  # Concerns - Single Responsibility Principle
+  include Inventoriable      # Manejo de inventario
+  include Explorable         # Pistas, puertas, items examinados
+  include Panicable          # Modo pánico
+  include PasswordGenerator  # Generación de contraseña
+
+  # Room state
+  field :current_room_slug, type: String, default: GameConstants::Rooms::CELLAR
   field :lives, type: Integer, default: -> { Settings.game.lives }
-  field :inventory, type: Array, default: []
-  field :collected_clues, type: Array, default: []
-  field :unlocked_doors, type: Array, default: []
-  field :examined_items, type: Array, default: []
+
+  # Terminal and vault
   field :terminal_attempts, type: Integer, default: 0
   field :has_vault_token, type: Boolean, default: false
   field :vault_token, type: String
+
+  # Game state
   field :status, type: String, default: 'playing'
-  field :panic_started_at, type: Time
   field :ending_type, type: String
   field :ending_message, type: String
 
-  # Dynamic password system
-  field :password, type: String
-  field :birth_year, type: Integer
-  field :photo_year, type: Integer
-  field :age_in_photo, type: Integer
+  # Command history (Command Pattern)
+  field :command_history, type: Array, default: []
 
-  before_create :generate_password
+  # Validations
+  validates :current_room_slug, presence: true
+  validates :lives, numericality: { greater_than_or_equal_to: 0 }
+  validates :terminal_attempts, numericality: { greater_than_or_equal_to: 0 }
 
+  # Indexes
   index({ created_at: -1 })
+  index({ status: 1 })
 
+  # State Machine (State Pattern)
   aasm column: :status do
     state :playing, initial: true
     state :panic
@@ -48,94 +59,60 @@ class GameSession
     end
   end
 
+  # Room navigation
   def current_room
     Room.find_by_slug(current_room_slug)
   end
 
-  def panic_time_remaining
-    return nil unless panic?
-    return 0 if panic_expired?
-
-    remaining = Settings.game.panic_duration - (Time.current - panic_started_at).to_i
-    [remaining, 0].max
-  end
-
-  def panic_expired?
-    return false unless panic?
-
-    (Time.current - panic_started_at).to_i >= Settings.game.panic_duration
-  end
-
-  def add_to_inventory(item_slug)
-    inventory << item_slug unless inventory.include?(item_slug)
+  def move_to(room_slug)
+    self.current_room_slug = room_slug
     save!
   end
 
-  def remove_from_inventory(item_slug)
-    inventory.delete(item_slug)
-    save!
-  end
-
-  def has_item?(item_slug)
-    inventory.include?(item_slug)
-  end
-
-  def add_clue(clue_slug)
-    collected_clues << clue_slug unless collected_clues.include?(clue_slug)
-    save!
-  end
-
-  def unlock_door(door_id)
-    unlocked_doors << door_id unless unlocked_doors.include?(door_id)
-    save!
-  end
-
-  def door_unlocked?(door_id)
-    unlocked_doors.include?(door_id)
-  end
-
-  def mark_examined(item_slug)
-    examined_items << item_slug unless examined_items.include?(item_slug)
-    save!
-  end
-
-  def already_examined?(item_slug)
-    examined_items.include?(item_slug)
-  end
-
+  # Combat/Damage
   def take_damage
     self.lives -= 1
     save!
-    lose!(ending: 'no_lives', message: 'Tus heridas son demasiado graves.') if lives <= 0
+    lose!(ending: GameConstants::Endings::NO_LIVES, message: 'Tus heridas son demasiado graves.') if lives <= 0
   end
 
+  def alive?
+    lives.positive?
+  end
+
+  # Game endings
   def lose!(ending:, message:)
     self.ending_type = ending
     self.ending_message = message
-    self.lose
+    lose
     save!
   end
 
   def win!(message:)
-    self.ending_type = 'escaped'
+    self.ending_type = GameConstants::Endings::ESCAPED
     self.ending_message = message
-    self.win
+    win
     save!
   end
 
-  private
-
-  def set_panic_timer
-    self.panic_started_at = Time.current
+  def game_over?
+    won? || lost?
   end
 
-  def generate_password
-    # Generate random birth year between 1970-1995
-    self.birth_year = rand(1970..1995)
-    self.password = birth_year.to_s
+  # Terminal
+  def increment_terminal_attempts
+    self.terminal_attempts += 1
+    save!
+  end
 
-    # Generate consistent story data
-    self.age_in_photo = rand(5..12)
-    self.photo_year = birth_year + age_in_photo
+  def terminal_blocked?
+    terminal_attempts >= Settings.game.max_terminal_attempts
+  end
+
+  # Vault token
+  def grant_vault_token(token)
+    self.has_vault_token = true
+    self.vault_token = token
+    save!
   end
 end

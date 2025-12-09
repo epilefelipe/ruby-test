@@ -6,7 +6,9 @@ module Api
       before_action :require_session!
 
       def auth
-        result = Game::TerminalAuthService.new(@session, password: params.require(:password)).call
+        command = Commands::CommandFactory.create(:terminal_auth, @session, password: params.require(:password))
+        result = command.execute
+
         status = result[:game_over] ? :forbidden : :ok
         render json: result, status: status
       end

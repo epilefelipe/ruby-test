@@ -1,35 +1,38 @@
 # frozen_string_literal: true
 
-module Game
-  class MoveService < BaseService
-    attr_reader :direction
-
-    def initialize(session, direction:)
-      super(session)
-      @direction = direction
+module Commands
+  class MoveCommand < BaseCommand
+    def undoable?
+      true
     end
 
-    def call
-      return { error: errors.first, game_over: true } if check_panic_expired || check_game_over
+    def undo
+      return unless @previous_room
 
+      session.update!(current_room_slug: @previous_room)
+    end
+
+    private
+
+    def perform
+      @previous_room = session.current_room_slug
       exit_door = find_exit
-      return { error: 'No hay salida en esa dirección.' } unless exit_door
+
+      return error_result('No hay salida en esa dirección.') unless exit_door
 
       if exit_locked?(exit_door)
-        return {
+        return success_result(
           success: false,
           message: 'La puerta está cerrada.',
           hint: exit_door.hint
-        }
+        )
       end
 
       move_to_room(exit_door)
     end
 
-    private
-
     def find_exit
-      session.current_room.exits.find { |e| e.direction == direction }
+      session.current_room.exits.find { |e| e.direction == params[:direction] }
     end
 
     def exit_locked?(exit_door)
@@ -39,58 +42,41 @@ module Game
     def move_to_room(exit_door)
       target_room = Room.find_by_slug(exit_door.target_room_slug)
 
-      # Check for victory
-      if target_room.slug == GameConstants::Rooms::SALIDA
-        return process_victory(target_room)
-      end
+      return process_victory(target_room) if target_room.slug == GameConstants::Rooms::SALIDA
 
-      previous_room = session.current_room_slug
       session.update!(current_room_slug: target_room.slug)
 
-      result = {
+      result = success_result(
         success: true,
-        previous_room: previous_room,
+        previous_room: @previous_room,
         current_room: RoomSerializer.render_as_hash(target_room, session: session)
-      }
+      )
 
-      if session.panic?
-        result[:panic] = panic_info
-        # Warning if going wrong direction
-        if direction == GameConstants::Directions::SUR && previous_room == GameConstants::Rooms::PASILLO
-          result[:warning] = '¡ESTÁS YENDO EN LA DIRECCIÓN EQUIVOCADA!'
-        end
-      end
-
+      add_direction_warning(result) if session.panic?
       result
     end
 
     def process_victory(room)
-      # Re-check game state before victory (in case panic expired during request)
       session.reload
+
       if session.lost?
-        return {
-          error: session.ending_message,
+        return error_result(
+          session.ending_message,
           game_over: true,
           ending: {
             type: 'bad_ending',
             title: '¡TIEMPO AGOTADO!',
             description: session.ending_message
           }
-        }
+        )
       end
 
-      # Save time remaining BEFORE changing state (panic_time_remaining returns nil if not in panic state)
       time_remaining = session.panic_time_remaining
-
       session.win!(message: victory_message)
 
-      {
+      success_result(
         success: true,
-        current_room: {
-          id: room.slug,
-          name: room.name,
-          description: room.description
-        },
+        current_room: { id: room.slug, name: room.name, description: room.description },
         game_complete: true,
         ending: {
           type: 'good_ending',
@@ -98,7 +84,13 @@ module Game
           description: session.ending_message,
           time_remaining_when_escaped: time_remaining
         }
-      }
+      )
+    end
+
+    def add_direction_warning(result)
+      if params[:direction] == GameConstants::Directions::SUR && @previous_room == GameConstants::Rooms::PASILLO
+        result[:warning] = '¡ESTÁS YENDO EN LA DIRECCIÓN EQUIVOCADA!'
+      end
     end
 
     def victory_message

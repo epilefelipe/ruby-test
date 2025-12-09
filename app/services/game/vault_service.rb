@@ -21,7 +21,7 @@ module Game
     private
 
     def in_vault_room?
-      session.current_room_slug == 'estudio'
+      session.current_room_slug == GameConstants::Rooms::ESTUDIO
     end
 
     def valid_token?

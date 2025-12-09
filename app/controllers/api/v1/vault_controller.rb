@@ -6,8 +6,8 @@ module Api
       before_action :require_session!
 
       def open
-        token = extract_token
-        result = Game::VaultService.new(@session, token: token).call
+        command = Commands::CommandFactory.create(:vault_open, @session, token: extract_token)
+        result = command.execute
 
         status = case result[:status]
                  when 401 then :unauthorized
