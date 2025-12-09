@@ -114,7 +114,3 @@ docker-compose --profile play build cli
 - **Victoria:** Escapar por la puerta principal antes del colapso
 - **Derrota por tiempo:** No escapar en 30 segundos
 - **Derrota por bloqueo:** Fallar 3 veces la contraseña del terminal
-
-## Licencia
-
-MIT
