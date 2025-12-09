@@ -1,0 +1,69 @@
+{
+  "endpoint": "POST /game/move { direction: 'este' }",
+
+  "response_enter": {
+    "success": true,
+    "current_room": {
+      "id": "estudio",
+      "name": "Estudio Polvoriento",
+      "description": "El estudio del Dr. Velasco. Libros por todas partes. Un escritorio con una computadora antigua. Hay una caja fuerte en la pared.",
+      "items_visible": ["computadora", "libros", "caja_fuerte", "foto_escritorio"],
+      "exits": {
+        "oeste": { "door_id": "puerta_estudio", "status": "unlocked" }
+      }
+    }
+  },
+
+  "___EXAMINE_COMPUTADORA___": "===========================================",
+
+  "examine_computadora": {
+    "request": { "target": "computadora" },
+    "response": {
+      "item": {
+        "id": "computadora",
+        "name": "Computadora antigua",
+        "description": "Una terminal de los 80s. La pantalla parpadea. Muestra: 'SISTEMA VELASCO - INGRESE CONTRASEÑA'. Parece requerir un código de 4 dígitos."
+      },
+      "interaction_available": {
+        "type": "terminal",
+        "endpoint": "POST /terminal/auth",
+        "hint": "Necesitas la contraseña correcta. Las pistas mencionan algo sobre María..."
+      }
+    }
+  },
+
+  "___EXAMINE_FOTO___": "===========================================",
+
+  "examine_foto": {
+    "request": { "target": "foto_escritorio" },
+    "response": {
+      "item": {
+        "id": "foto_escritorio",
+        "name": "Foto en el escritorio",
+        "description": "María soplando velas. El pastel dice 'Felices 7'. La fecha en el reverso: 'Octubre 1987'."
+      },
+      "clue_discovered": {
+        "id": "clue_birthday",
+        "text": "María cumplió 7 en 1987. Confirmado: nació en 1980."
+      }
+    }
+  },
+
+  "___EXAMINE_CAJA_FUERTE___": "===========================================",
+
+  "examine_caja_fuerte": {
+    "request": { "target": "caja_fuerte" },
+    "response": {
+      "item": {
+        "id": "caja_fuerte",
+        "name": "Caja fuerte",
+        "description": "Una caja fuerte empotrada en la pared. Tiene una cerradura electrónica moderna. Hay un lector de tarjetas."
+      },
+      "interaction_available": {
+        "type": "secure_door",
+        "requires": "access_token",
+        "hint": "Necesitas una tarjeta de acceso válida. Quizás el sistema de la computadora pueda generar una."
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "endpoint": "POST /vault/open",
+  "headers": {
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  },
+
+  "___ACCESS_GRANTED___": "===========================================",
+
+  "response_success": {
+    "success": true,
+    "message": "La caja fuerte se abre con un clic.",
+    "vault_contents": {
+      "description": "Dentro encuentras documentos antiguos y una llave maestra.",
+      "items_found": [
+        {
+          "id": "llave_maestra",
+          "name": "Llave Maestra",
+          "description": "Una llave dorada con el emblema Velasco. Abre la puerta principal.",
+          "added_to_inventory": true
+        },
+        {
+          "id": "diario_maria",
+          "name": "Diario de María",
+          "description": "El diario personal de María Velasco.",
+          "added_to_inventory": true
+        }
+      ]
+    },
+    "clue_discovered": {
+      "id": "clue_escape",
+      "text": "El diario dice: 'La salida está al norte del pasillo. Papá siempre deja la llave maestra aquí.'"
+    }
+  },
+
+  "___NO_TOKEN___": "===========================================",
+
+  "response_no_token": {
+    "success": false,
+    "error": "Acceso denegado",
+    "message": "Necesitas una tarjeta de acceso válida.",
+    "status": 401
+  },
+
+  "___INVALID_TOKEN___": "===========================================",
+
+  "response_invalid_token": {
+    "success": false,
+    "error": "Token inválido",
+    "message": "La tarjeta de acceso no es válida o ha expirado.",
+    "status": 403
+  }
+}

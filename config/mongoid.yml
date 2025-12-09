@@ -1,0 +1,15 @@
+development:
+  clients:
+    default:
+      uri: <%= ENV.fetch('MONGODB_URI', 'mongodb://localhost:27017/mansion_velasco') %>
+      options:
+        server_selection_timeout: 5
+        max_pool_size: 10
+
+production:
+  clients:
+    default:
+      uri: <%= ENV['MONGODB_URI'] %>
+      options:
+        server_selection_timeout: 5
+        max_pool_size: 50

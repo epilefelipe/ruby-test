@@ -1,0 +1,32 @@
+{
+  "endpoint": "POST /game/examine",
+
+  "request": { "target": "diario_maria" },
+  "response": {
+    "item": {
+      "id": "diario_maria",
+      "name": "Diario de María",
+      "description": "Las páginas están amarillentas. La última entrada dice:"
+    },
+    "content": {
+      "entries": [
+        {
+          "date": "10 de Octubre, 1987",
+          "text": "Papá actúa extraño. Dice que alguien nos persigue. Ha instalado cerraduras nuevas en todas partes."
+        },
+        {
+          "date": "14 de Octubre, 1987",
+          "text": "Mamá me dio su collar con mi año de nacimiento. Dice que nunca lo olvide. ¿Por qué llora?"
+        },
+        {
+          "date": "15 de Octubre, 1987",
+          "text": "Escucho ruidos abajo. Papá me dijo que me escondiera. La llave maestra está en la caja fuerte. La contraseña es mi año de nacimiento. Si lees esto, SAL DE AQUÍ."
+        }
+      ]
+    },
+    "clue_discovered": {
+      "id": "clue_final",
+      "text": "María dejó instrucciones. La llave maestra abre la salida al norte."
+    }
+  }
+}

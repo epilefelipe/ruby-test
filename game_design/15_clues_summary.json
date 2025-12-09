@@ -1,0 +1,43 @@
+{
+  "endpoint": "GET /game/clues",
+  "description": "Resumen de todas las pistas que llevan a la contraseña",
+
+  "response": {
+    "clues": [
+      {
+        "id": "clue_maria",
+        "source": "nota_1 (caja en sótano)",
+        "text": "María nunca olvidó el año en que todo comenzó.",
+        "hint_level": 1
+      },
+      {
+        "id": "clue_year",
+        "source": "periodico (sótano)",
+        "text": "1987 - María tenía 7 años",
+        "hint_level": 2
+      },
+      {
+        "id": "clue_birth",
+        "source": "deducción de nota_1",
+        "text": "Si María tenía 7 años en 1987... nació en 1980",
+        "hint_level": 3
+      },
+      {
+        "id": "clue_collar",
+        "source": "cuadro_familia (pasillo)",
+        "text": "El collar de María tiene grabado: 1980",
+        "hint_level": 4
+      },
+      {
+        "id": "clue_birthday",
+        "source": "foto_escritorio (estudio)",
+        "text": "María cumplió 7 en 1987. Confirmado: nació en 1980",
+        "hint_level": 5
+      }
+    ],
+    "solution": {
+      "password": "1980",
+      "logic": "Todas las pistas apuntan al año de nacimiento de María Velasco: 1980"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "endpoint": "POST /game/use",
+
+  "___USE_KEY_ON_DOOR___": "===========================================",
+
+  "request_1": {
+    "item": "llave_sotano",
+    "target": "puerta_sotano"
+  },
+  "response_1": {
+    "success": true,
+    "message": "La llave encaja perfectamente. La puerta se abre con un chirrido.",
+    "door_status": "unlocked",
+    "item_consumed": true,
+    "new_exit_available": {
+      "direction": "norte",
+      "room_id": "pasillo"
+    }
+  },
+
+  "___USE_WRONG_ITEM___": "===========================================",
+
+  "request_2": {
+    "item": "nota_1",
+    "target": "puerta_sotano"
+  },
+  "response_2": {
+    "success": false,
+    "message": "No puedes usar eso aquí."
+  }
+}

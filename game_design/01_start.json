@@ -1,0 +1,22 @@
+{
+  "endpoint": "POST /game/start",
+  "request": {},
+  "response": {
+    "game_id": "abc123",
+    "player": {
+      "id": "player_001",
+      "lives": 3,
+      "inventory": []
+    },
+    "current_room": {
+      "id": "cellar",
+      "name": "Sótano Oscuro",
+      "description": "Despiertas en un sótano húmedo. No recuerdas cómo llegaste aquí. La única luz proviene de una pequeña ventana en lo alto. Huele a encierro.",
+      "items_visible": ["caja_vieja", "periodico"],
+      "exits": {
+        "norte": { "door_id": "puerta_sotano", "status": "locked" }
+      }
+    },
+    "message": "Bienvenido. Encuentra la salida antes de que sea tarde."
+  }
+}

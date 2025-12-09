@@ -1,0 +1,86 @@
+{
+  "game_over_scenarios": [
+
+    {
+      "id": "terminal_blocked",
+      "trigger": "3 intentos fallidos en /terminal/auth",
+      "response": {
+        "game_over": true,
+        "ending": {
+          "type": "bad_ending",
+          "title": "Sistema Bloqueado",
+          "description": "El sistema de seguridad se ha bloqueado. Una alarma silenciosa ha sido activada. Escuchas pasos pesados acercándose desde el sótano. No hay escapatoria.",
+          "hint": "Pista: Las notas mencionaban algo sobre el año de nacimiento de María."
+        }
+      }
+    },
+
+    {
+      "id": "panic_timeout",
+      "trigger": "time_remaining <= 0 después de activar panic mode",
+      "response": {
+        "game_over": true,
+        "ending": {
+          "type": "bad_ending",
+          "title": "La Mansión Colapsa",
+          "description": "El techo colapsa sobre ti. Lo último que ves es el diario de María cayendo de tus manos mientras la oscuridad te envuelve. La Mansión Velasco se ha cobrado otra víctima.",
+          "hint": "Consejo: Después de autenticarte tienes 30 segundos. Ve directo: caja fuerte → llave → puerta norte → escapar."
+        }
+      }
+    },
+
+    {
+      "id": "trap_candelabro",
+      "trigger": "POST /game/use { item: 'candelabro', target: 'puerta_terminal' }",
+      "response": {
+        "success": false,
+        "message": "Intentas forzar la puerta con el candelabro. Se activa una trampa. Una flecha sale de la pared.",
+        "damage": true,
+        "lives_remaining": 2,
+        "warning": "Has perdido una vida. Ten más cuidado."
+      }
+    },
+
+    {
+      "id": "trap_forzar_caja",
+      "trigger": "POST /game/use { item: 'candelabro', target: 'caja_fuerte' }",
+      "response": {
+        "success": false,
+        "message": "Intentas golpear la caja fuerte. Un gas comienza a salir de las paredes.",
+        "damage": true,
+        "lives_remaining": 2,
+        "warning": "Has perdido una vida. La caja fuerte tiene protección."
+      }
+    },
+
+    {
+      "id": "no_lives",
+      "trigger": "lives = 0",
+      "response": {
+        "game_over": true,
+        "ending": {
+          "type": "bad_ending",
+          "title": "Sin Vida",
+          "description": "Tus heridas son demasiado graves. Colapsos en el pasillo de la mansión. La oscuridad te consume.",
+          "hint": "Consejo: Piensa antes de actuar. No todo se puede forzar."
+        }
+      }
+    },
+
+    {
+      "id": "wrong_door_during_panic",
+      "trigger": "POST /game/move { direction: 'sur' } durante panic mode",
+      "response": {
+        "success": true,
+        "message": "¡NO! ¡Volviste al sótano! ¡La salida está al NORTE!",
+        "panic": {
+          "active": true,
+          "time_remaining": 8,
+          "message": "⚠️ ¡ESTÁS YENDO EN LA DIRECCIÓN EQUIVOCADA! ¡8 SEGUNDOS!"
+        },
+        "warning": "El sótano no tiene salida. Debes ir al norte del pasillo."
+      }
+    }
+
+  ]
+}

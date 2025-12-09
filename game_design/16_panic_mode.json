@@ -1,0 +1,117 @@
+{
+  "feature": "PANIC MODE - 30 segundos para escapar",
+  "description": "Al autenticarse correctamente, se activa el protocolo de autodestrucción",
+
+  "___PANIC_ACTIVATED___": "===========================================",
+
+  "trigger": "POST /terminal/auth con password correcto",
+
+  "game_state_after_auth": {
+    "panic_mode": true,
+    "panic_started_at": "2024-12-09T10:45:00Z",
+    "panic_expires_at": "2024-12-09T10:45:30Z",
+    "time_remaining": 30
+  },
+
+  "___ALL_RESPONSES_INCLUDE_TIMER___": "===========================================",
+
+  "example_response_during_panic": {
+    "endpoint": "GET /game/look (durante panic mode)",
+    "response": {
+      "room": {
+        "id": "estudio",
+        "name": "Estudio Polvoriento",
+        "description": "¡Las paredes tiemblan! Polvo cae del techo."
+      },
+      "panic": {
+        "active": true,
+        "time_remaining": 22,
+        "message": "⚠️ ¡22 SEGUNDOS! ¡LA MANSIÓN COLAPSA!"
+      }
+    }
+  },
+
+  "___VAULT_DURING_PANIC___": "===========================================",
+
+  "vault_response_panic": {
+    "endpoint": "POST /vault/open",
+    "response": {
+      "success": true,
+      "message": "¡La caja fuerte se abre! ¡NO HAY TIEMPO!",
+      "items_found": ["llave_maestra", "diario_maria"],
+      "panic": {
+        "active": true,
+        "time_remaining": 18,
+        "message": "⚠️ ¡18 SEGUNDOS! ¡CORRE AL PASILLO!"
+      }
+    }
+  },
+
+  "___MOVE_DURING_PANIC___": "===========================================",
+
+  "move_response_panic": {
+    "endpoint": "POST /game/move { direction: 'oeste' }",
+    "response": {
+      "success": true,
+      "current_room": {
+        "id": "pasillo",
+        "name": "Pasillo Tenebroso",
+        "description": "¡El techo cruje! ¡Escombros caen a tu alrededor!"
+      },
+      "panic": {
+        "active": true,
+        "time_remaining": 12,
+        "message": "⚠️ ¡12 SEGUNDOS! ¡LA PUERTA NORTE! ¡USA LA LLAVE!"
+      }
+    }
+  },
+
+  "___USE_KEY_DURING_PANIC___": "===========================================",
+
+  "use_key_panic": {
+    "endpoint": "POST /game/use { item: 'llave_maestra', target: 'puerta_terminal' }",
+    "response": {
+      "success": true,
+      "message": "¡La llave entra! ¡La puerta se abre! ¡CORRE!",
+      "panic": {
+        "active": true,
+        "time_remaining": 6,
+        "message": "⚠️ ¡6 SEGUNDOS! ¡MUÉVETE AL NORTE! ¡AHORA!"
+      }
+    }
+  },
+
+  "___ESCAPE_IN_TIME___": "===========================================",
+
+  "escape_success": {
+    "endpoint": "POST /game/move { direction: 'norte' }",
+    "condition": "time_remaining > 0",
+    "response": {
+      "success": true,
+      "game_complete": true,
+      "ending": {
+        "type": "good_ending",
+        "title": "¡ESCAPASTE!",
+        "description": "Sales corriendo al jardín. Apenas cruzas el umbral, la mansión colapsa detrás de ti en una nube de polvo y escombros. El diario de María está a salvo en tus manos. Miras hacia atrás mientras el sol ilumina las ruinas de la Mansión Velasco. Sea lo que sea que pasó en 1987, ahora descansa bajo los escombros.",
+        "dramatic_moment": "La puerta se cierra detrás de ti justo cuando el techo cae.",
+        "time_remaining_when_escaped": 3
+      }
+    }
+  },
+
+  "___TIME_EXPIRED___": "===========================================",
+
+  "time_expired": {
+    "trigger": "Cualquier request cuando time_remaining <= 0",
+    "response": {
+      "success": false,
+      "game_over": true,
+      "ending": {
+        "type": "bad_ending",
+        "title": "Demasiado Lento",
+        "description": "El techo colapsa sobre ti. Lo último que ves es el diario de María cayendo de tus manos mientras la oscuridad te envuelve. La Mansión Velasco se ha cobrado otra víctima.",
+        "hint": "Consejo: Después de autenticarte, ve directo a la caja fuerte, toma la llave y corre al norte. No pierdas tiempo."
+      }
+    }
+  }
+}

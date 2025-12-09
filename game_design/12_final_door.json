@@ -1,0 +1,20 @@
+{
+  "endpoint": "POST /game/use",
+
+  "___USE_MASTER_KEY___": "===========================================",
+
+  "request": {
+    "item": "llave_maestra",
+    "target": "puerta_terminal"
+  },
+  "response": {
+    "success": true,
+    "message": "La llave maestra encaja. La puerta se abre revelando la salida.",
+    "door_status": "unlocked",
+    "new_exit_available": {
+      "direction": "norte",
+      "room_id": "salida"
+    },
+    "narrative": "La luz del exterior entra por la puerta. Después de todo este tiempo, finalmente puedes escapar de la mansión Velasco."
+  }
+}

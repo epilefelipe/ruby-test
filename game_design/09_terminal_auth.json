@@ -1,0 +1,62 @@
+{
+  "endpoint": "POST /terminal/auth",
+
+  "___AUTH_SUCCESS___": "===========================================",
+
+  "request_correct": {
+    "password": "1980"
+  },
+  "response_correct": {
+    "success": true,
+    "message": "ACCESO CONCEDIDO. Bienvenido, Dr. Velasco.",
+    "terminal_output": [
+      "Sistema Velasco v2.1",
+      "Último acceso: 15/10/1987",
+      "Generando tarjeta de acceso...",
+      "⚠️ ALERTA: Protocolo de seguridad activado",
+      "⚠️ AUTODESTRUCCIÓN EN 30 SEGUNDOS"
+    ],
+    "panic_mode": {
+      "activated": true,
+      "time_remaining": 30,
+      "message": "¡La mansión va a colapsar! Tienes 30 segundos para escapar.",
+      "expires_at": "2024-12-09T10:45:30Z"
+    },
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsZXZlbCI6MSwicm9vbSI6InZhdWx0IiwiZXhwIjoxNjk5OTk5OTk5fQ.xxxxx",
+    "item_received": {
+      "id": "access_card_1",
+      "name": "Tarjeta de Acceso Nivel 1",
+      "description": "Tarjeta magnética. Permite acceso a la caja fuerte. ¡DATE PRISA!",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    },
+    "new_clue": {
+      "id": "clue_vault",
+      "text": "La computadora muestra: 'Protocolo de emergencia activado. María lo escondió en la caja fuerte.' ¡RÁPIDO!"
+    }
+  },
+
+  "___AUTH_FAILED___": "===========================================",
+
+  "request_wrong": {
+    "password": "1234"
+  },
+  "response_wrong": {
+    "success": false,
+    "message": "ACCESO DENEGADO",
+    "attempts_remaining": 2,
+    "warning": "Advertencia: 2 intentos restantes antes del bloqueo."
+  },
+
+  "___AUTH_BLOCKED___": "===========================================",
+
+  "response_blocked": {
+    "success": false,
+    "message": "SISTEMA BLOQUEADO",
+    "game_over": true,
+    "ending": {
+      "type": "bad_ending",
+      "title": "Bloqueado",
+      "description": "El sistema se ha bloqueado permanentemente. Escuchas pasos acercándose. No hay escape."
+    }
+  }
+}

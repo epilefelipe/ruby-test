@@ -1,0 +1,18 @@
+{
+  "endpoint": "GET /game/look",
+  "response": {
+    "room": {
+      "id": "cellar",
+      "name": "Sótano Oscuro",
+      "description": "Despiertas en un sótano húmedo. No recuerdas cómo llegaste aquí.",
+      "details": "Las paredes están cubiertas de humedad. Hay una caja vieja en la esquina y un periódico en el suelo. Una puerta de metal bloquea el paso al norte."
+    },
+    "items": [
+      { "id": "caja_vieja", "name": "Caja vieja", "hint": "Parece que se puede abrir" },
+      { "id": "periodico", "name": "Periódico amarillento", "hint": "La fecha es visible" }
+    ],
+    "exits": {
+      "norte": { "door_id": "puerta_sotano", "status": "locked", "hint": "Necesitas una llave" }
+    }
+  }
+}

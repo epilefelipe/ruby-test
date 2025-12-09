@@ -1,0 +1,77 @@
+{
+  "game": "La Mansión Velasco",
+  "version": "1.0",
+  "description": "Escape room API - Encuentra las pistas, descubre la contraseña, escapa en 30 segundos.",
+
+  "endpoints": {
+    "game": {
+      "POST /game/start": "Iniciar nueva partida",
+      "GET /game/look": "Ver habitación actual",
+      "GET /game/inventory": "Ver inventario y pistas",
+      "GET /game/clues": "Ver pistas recolectadas",
+      "GET /game/status": "Ver estado actual (vidas, tiempo, panic mode)",
+      "POST /game/examine": "Examinar objeto { target: 'id' }",
+      "POST /game/use": "Usar objeto { item: 'id', target: 'id' }",
+      "POST /game/move": "Moverse { direction: 'norte|sur|este|oeste' }"
+    },
+    "terminal": {
+      "POST /terminal/auth": "Autenticarse en terminal { password: 'XXXX' } - ¡ACTIVA PANIC MODE!"
+    },
+    "vault": {
+      "POST /vault/open": "Abrir caja fuerte (requiere Bearer token)"
+    }
+  },
+
+  "rooms_flow": {
+    "1_cellar": {
+      "name": "Sótano Oscuro",
+      "items": ["caja_vieja", "periodico"],
+      "exit": "norte → pasillo (necesita llave_sotano)"
+    },
+    "2_pasillo": {
+      "name": "Pasillo Tenebroso",
+      "items": ["cuadro_familia", "candelabro"],
+      "exits": {
+        "sur": "sótano",
+        "este": "estudio",
+        "norte": "salida (necesita llave_maestra)"
+      }
+    },
+    "3_estudio": {
+      "name": "Estudio Polvoriento",
+      "items": ["computadora", "foto_escritorio", "caja_fuerte", "libros"],
+      "puzzle": "Terminal requiere contraseña 1980 → da JWT token → abre caja fuerte"
+    },
+    "4_salida": {
+      "name": "Exterior - Jardín",
+      "ending": "Victoria"
+    }
+  },
+
+  "panic_mode": {
+    "trigger": "POST /terminal/auth con contraseña correcta",
+    "duration": 30,
+    "description": "Al autenticarse, se activa autodestrucción. 30 segundos para: abrir caja fuerte → obtener llave maestra → escapar al norte",
+    "all_responses_include": "time_remaining"
+  },
+
+  "win_condition": "Escapar por la puerta norte del pasillo con la llave maestra ANTES de que pasen 30 segundos",
+
+  "lose_conditions": [
+    "3 intentos fallidos en terminal → Sistema bloqueado",
+    "Perder 3 vidas (trampas) → Muerte",
+    "30 segundos después de autenticarse → Mansión colapsa"
+  ],
+
+  "password_solution": {
+    "answer": "1980",
+    "clues_needed": "Periódico (1987, María 7 años) + Notas sobre su nacimiento = 1980"
+  },
+
+  "optimal_path_after_auth": [
+    "POST /vault/open (con Bearer token) → llave_maestra",
+    "POST /game/move { direction: 'oeste' } → pasillo",
+    "POST /game/use { item: 'llave_maestra', target: 'puerta_terminal' }",
+    "POST /game/move { direction: 'norte' } → ¡VICTORIA!"
+  ]
+}

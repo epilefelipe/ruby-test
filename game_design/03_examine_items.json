@@ -1,0 +1,52 @@
+{
+  "endpoint": "POST /game/examine",
+
+  "___EXAMINE_CAJA___": "===========================================",
+
+  "request_1": { "target": "caja_vieja" },
+  "response_1": {
+    "item": {
+      "id": "caja_vieja",
+      "name": "Caja vieja",
+      "description": "Una caja de madera podrida. Adentro encuentras una llave oxidada y una nota arrugada."
+    },
+    "items_found": [
+      { "id": "llave_sotano", "name": "Llave oxidada", "added_to_inventory": true },
+      { "id": "nota_1", "name": "Nota arrugada", "added_to_inventory": true }
+    ],
+    "clue_discovered": {
+      "id": "clue_maria",
+      "text": "La nota dice: 'María nunca olvidó el año en que todo comenzó.'"
+    }
+  },
+
+  "___EXAMINE_PERIODICO___": "===========================================",
+
+  "request_2": { "target": "periodico" },
+  "response_2": {
+    "item": {
+      "id": "periodico",
+      "name": "Periódico amarillento",
+      "description": "Un periódico viejo. El titular dice: 'TRAGEDIA EN LA MANSIÓN VELASCO - 15 de Octubre de 1987'. Hay una foto de una niña llamada María."
+    },
+    "clue_discovered": {
+      "id": "clue_year",
+      "text": "El año 1987 parece importante. María Velasco tenía 7 años en la foto."
+    }
+  },
+
+  "___EXAMINE_NOTA___": "===========================================",
+
+  "request_3": { "target": "nota_1" },
+  "response_3": {
+    "item": {
+      "id": "nota_1",
+      "name": "Nota arrugada",
+      "description": "Letra temblorosa: 'María nunca olvidó el año en que todo comenzó. La clave está en su nacimiento.'"
+    },
+    "clue_discovered": {
+      "id": "clue_birth",
+      "text": "Si María tenía 7 años en 1987... nació en 1980."
+    }
+  }
+}

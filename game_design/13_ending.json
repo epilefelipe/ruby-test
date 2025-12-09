@@ -1,0 +1,31 @@
+{
+  "endpoint": "POST /game/move { direction: 'norte' } (desde pasillo con puerta abierta)",
+
+  "___GOOD_ENDING___": "===========================================",
+
+  "response": {
+    "success": true,
+    "current_room": {
+      "id": "salida",
+      "name": "Exterior - Jardín",
+      "description": "Sales al jardín abandonado de la mansión. El sol te ciega después de estar tanto tiempo en la oscuridad."
+    },
+    "game_complete": true,
+    "ending": {
+      "type": "good_ending",
+      "title": "Escape de la Mansión Velasco",
+      "description": "Has escapado de la mansión Velasco. El misterio de lo que pasó aquella noche de 1987 sigue sin resolverse, pero al menos estás a salvo. El diario de María ahora está en tus manos. Quizás algún día la verdad salga a la luz.",
+      "stats": {
+        "rooms_visited": 4,
+        "items_collected": 6,
+        "clues_discovered": 7,
+        "time_played": "15:32",
+        "attempts_used": 1
+      }
+    },
+    "credits": {
+      "message": "Gracias por jugar",
+      "story": "La Mansión Velasco"
+    }
+  }
+}

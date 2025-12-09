@@ -1,0 +1,14 @@
+{
+  "endpoint": "GET /game/inventory",
+  "response": {
+    "items": [
+      { "id": "llave_sotano", "name": "Llave oxidada", "description": "Una llave vieja y oxidada" },
+      { "id": "nota_1", "name": "Nota arrugada", "description": "Menciona a María y un año importante" }
+    ],
+    "clues_collected": [
+      { "id": "clue_maria", "text": "María nunca olvidó el año en que todo comenzó." },
+      { "id": "clue_year", "text": "1987 - María tenía 7 años" },
+      { "id": "clue_birth", "text": "María nació en 1980" }
+    ]
+  }
+}

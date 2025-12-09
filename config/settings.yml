@@ -1,0 +1,15 @@
+# Game Configuration
+game:
+  lives: <%= ENV.fetch('GAME_LIVES', 3) %>
+  max_terminal_attempts: <%= ENV.fetch('GAME_MAX_TERMINAL_ATTEMPTS', 3) %>
+  panic_duration: <%= ENV.fetch('GAME_PANIC_DURATION', 30) %>
+  password: "1980"
+
+# JWT Configuration
+jwt:
+  secret_key: <%= ENV.fetch('JWT_SECRET_KEY', 'default_secret_change_me') %>
+  expiration: <%= ENV.fetch('JWT_EXPIRATION', 30) %>
+
+# Redis Configuration
+redis:
+  url: <%= ENV.fetch('REDIS_URL', 'redis://localhost:6379/0') %>

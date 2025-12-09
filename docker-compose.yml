@@ -1,0 +1,55 @@
+services:
+  mongodb:
+    image: mongo:7
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE:-mansion_velasco}
+    healthcheck:
+      test: mongosh --eval 'db.runCommand("ping").ok' --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails db:seed && bundle exec rails server -b 0.0.0.0"
+    ports:
+      - "${RAILS_PORT:-3000}:3000"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      RAILS_ENV: ${RAILS_ENV:-development}
+      MONGODB_URI: mongodb://mongodb:27017/${MONGO_DATABASE:-mansion_velasco}
+      REDIS_URL: redis://redis:6379/0
+
+  cli:
+    build: ./client
+    stdin_open: true
+    tty: true
+    depends_on:
+      - web
+    environment:
+      API_URL: http://web:3000
+    profiles:
+      - play
+
+volumes:
+  mongo_data:

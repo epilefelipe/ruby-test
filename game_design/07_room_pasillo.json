@@ -1,0 +1,32 @@
+{
+  "endpoint": "POST /game/examine (en pasillo)",
+
+  "___EXAMINE_CUADRO___": "===========================================",
+
+  "request_1": { "target": "cuadro_familia" },
+  "response_1": {
+    "item": {
+      "id": "cuadro_familia",
+      "name": "Cuadro de la familia Velasco",
+      "description": "Una foto familiar. Padre, madre y una niña. Debajo dice: 'Familia Velasco, 1987'. María lleva un collar con el número 1980."
+    },
+    "clue_discovered": {
+      "id": "clue_collar",
+      "text": "El collar de María tiene grabado: 1980"
+    }
+  },
+
+  "___EXAMINE_CANDELABRO___": "===========================================",
+
+  "request_2": { "target": "candelabro" },
+  "response_2": {
+    "item": {
+      "id": "candelabro",
+      "name": "Candelabro antiguo",
+      "description": "Un candelabro de bronce. Puedes tomarlo."
+    },
+    "items_found": [
+      { "id": "candelabro", "name": "Candelabro", "added_to_inventory": true }
+    ]
+  }
+}

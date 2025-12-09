@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(rails new:*)",
+      "Bash(docker build:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker-compose build:*)",
+      "Bash(docker-compose:*)",
+      "Bash(curl:*)",
+      "Bash(docker ps:*)",
+      "Bash(cmd /c \"start \"\"\"\" \"\"C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe\"\"\")",
+      "Bash(timeout 60 bash -c 'while ! docker info >/dev/null 2>&1; do echo \"\"Waiting for Docker...\"\"; sleep 5; done; echo \"\"Docker is ready!\"\"')",
+      "Bash(docker info:*)",
+      "Bash(docker pull:*)",
+      "Bash(tasklist:*)",
+      "Bash(findstr:*)",
+      "Bash(for i in {1..12})",
+      "Bash(do echo \"Attempt $i...\")",
+      "Bash(break)",
+      "Bash(done)",
+      "Bash(wsl:*)",
+      "Bash(cmd /c \"docker ps\")",
+      "Bash(powershell -Command \"docker ps\")",
+      "Bash(for i in {1..6})",
+      "Bash(do echo \"Checking $i/6...\")",
+      "Bash(powershell -Command \"docker version\")",
+      "Bash(docker run --rm --network ruby_default curlimages/curl:latest -s http://web:3000/api/v1/game/start -X POST)",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}

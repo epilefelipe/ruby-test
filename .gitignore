@@ -1,0 +1,28 @@
+# Environment
+.env
+
+# Logs
+log/*
+!log/.keep
+
+# Temp files
+tmp/*
+!tmp/.keep
+
+# Ruby
+*.gem
+.bundle
+vendor/bundle
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Game design docs (optional)
+# game_design/

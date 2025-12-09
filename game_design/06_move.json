@@ -1,0 +1,31 @@
+{
+  "endpoint": "POST /game/move",
+
+  "___MOVE_SUCCESS___": "===========================================",
+
+  "request_1": { "direction": "norte" },
+  "response_1": {
+    "success": true,
+    "previous_room": "cellar",
+    "current_room": {
+      "id": "pasillo",
+      "name": "Pasillo Tenebroso",
+      "description": "Un pasillo largo y oscuro. Las paredes están llenas de cuadros de la familia Velasco. Al fondo ves una luz tenue.",
+      "items_visible": ["cuadro_familia", "candelabro"],
+      "exits": {
+        "sur": { "door_id": "puerta_sotano", "status": "unlocked" },
+        "este": { "door_id": "puerta_estudio", "status": "unlocked" },
+        "norte": { "door_id": "puerta_terminal", "status": "locked", "hint": "Puerta electrónica. Requiere código de acceso." }
+      }
+    }
+  },
+
+  "___MOVE_BLOCKED___": "===========================================",
+
+  "request_2": { "direction": "norte" },
+  "response_2_when_locked": {
+    "success": false,
+    "message": "La puerta está cerrada. Necesitas encontrar otra forma de abrirla.",
+    "hint": "Parece ser una cerradura electrónica."
+  }
+}
