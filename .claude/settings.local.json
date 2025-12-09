@@ -27,7 +27,12 @@
       "Bash(powershell -Command \"docker version\")",
       "Bash(docker run --rm --network ruby_default curlimages/curl:latest -s http://web:3000/api/v1/game/start -X POST)",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nInitial commit: La Mansión Velasco - Escape Room API\n\nA text-based escape room game built with:\n- Rails 7.1 API with MongoDB (Mongoid)\n- Docker Compose setup (MongoDB, Redis, Web, CLI)\n- Interactive CLI client with TTY gems\n- JWT-based terminal authentication\n- Panic mode with 30-second countdown\n\nGame features:\n- Explore rooms, examine objects, collect items\n- Find clues to discover the password (1980)\n- Authenticate at terminal to trigger panic mode\n- Escape before time runs out\nEOF\n)\")",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

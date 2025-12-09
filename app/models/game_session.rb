@@ -19,6 +19,14 @@ class GameSession
   field :ending_type, type: String
   field :ending_message, type: String
 
+  # Dynamic password system
+  field :password, type: String
+  field :birth_year, type: Integer
+  field :photo_year, type: Integer
+  field :age_in_photo, type: Integer
+
+  before_create :generate_password
+
   index({ created_at: -1 })
 
   aasm column: :status do
@@ -119,5 +127,15 @@ class GameSession
 
   def set_panic_timer
     self.panic_started_at = Time.current
+  end
+
+  def generate_password
+    # Generate random birth year between 1970-1995
+    self.birth_year = rand(1970..1995)
+    self.password = birth_year.to_s
+
+    # Generate consistent story data
+    self.age_in_photo = rand(5..12)
+    self.photo_year = birth_year + age_in_photo
   end
 end

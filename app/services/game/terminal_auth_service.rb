@@ -28,7 +28,7 @@ module Game
     end
 
     def correct_password?
-      password == Settings.game.password
+      password == session.password
     end
 
     def process_success
